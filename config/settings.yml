@@ -1,0 +1,15 @@
+paths:
+  input: input
+  output: output
+
+csv:
+  separator: ";"
+  encoding: "utf-8-sig"
+
+excel:
+  error_policy: warning
+  missing_formula_cache_policy: warning
+
+logging:
+  level: INFO
+

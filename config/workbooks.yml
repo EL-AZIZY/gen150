@@ -1,0 +1,246 @@
+activity_template: &activity_template
+  family: apsf_activity
+  limits:
+    first_row: 1
+    last_row: 117
+    first_column: 1
+    last_column: 9
+  title_area:
+    first_row: 1
+    last_row: 3
+    first_column: 1
+    last_column: 9
+  year_cells:
+    reference: B7
+    comparison: C7
+  label_column: A
+  data_columns:
+    montant_reference_mad: B
+    montant_comparaison_mad: C
+    dossiers_reference: D
+    dossiers_comparaison: E
+    variation_montant_mad: F
+    variation_montant_pct: G
+    variation_dossiers_unites: H
+    variation_dossiers_pct: I
+  infer_sections: true
+  default_section: ACTIVITE
+  skip_labels:
+    - PRÊTS AFFECTÉS
+    - PRÊTS NON AFFECTÉS
+    - Dossiers en nombre
+  unit_tokens:
+    - unité
+    - unités
+    - dirham
+    - MAD
+    - pourcentage
+  sections:
+    PRODUCTION_NETTE:
+      - PRODUCTION NETTE
+    ENCOURS_SAIN:
+      - ENCOURS SAIN
+      - ENCOURS SAINS
+    ENCOURS_BRUT:
+      - ENCOURS BRUT
+      - ENCOURS BRUTS
+    CREANCES_EN_SOUFFRANCE:
+      - ENCOURS DES CRÉANCES EN SOUFFRANCE
+      - ENCOURS DES CREANCES EN SOUFFRANCE
+  hierarchy:
+    types:
+      PRETS_AFFECTES:
+        - PRÊTS AFFECTÉS
+        - PRETS AFFECTES
+      PRETS_NON_AFFECTES:
+        - PRÊTS NON AFFECTÉS
+        - PRETS NON AFFECTES
+    categories:
+      VEHICULES:
+        - VÉHICULES
+        - VEHICULES
+      EQUIPEMENT_DOMESTIQUE:
+        - ÉQUIPEMENT DOMESTIQUE
+        - EQUIPEMENT DOMESTIQUE
+      AUTRES_PRECISER:
+        - AUTRES À PRÉCISER
+        - AUTRES A PRECISER
+      PRETS_PERSONNELS:
+        - PRÊTS PERSONNELS
+        - PRETS PERSONNELS
+      REVOLVING:
+        - REVOLVING
+    products:
+      CREDIT_CLASSIQUE:
+        - CRÉDIT CLASSIQUE
+        - CREDIT CLASSIQUE
+      LOA:
+        - LOA
+      MOURABAHA:
+        - MOURABAHA
+        - MOURABAH
+      CNT:
+        - CNT
+      CMR:
+        - CMR
+      CONVENTIONS_PRIVEES:
+        - CONVENTIONS PRIVÉES
+        - CONVENTIONS PRIVEES
+        - CONVENTIONS
+      OP_BANCAIRE:
+        - OP BANCAIRE
+        - OPÉRATIONS BANCAIRES
+        - OPERATIONS BANCAIRES
+
+summary_common: &summary_common
+  family: apsf_competitor_summary
+  market_label: Marché
+  market_share_label: Part de marché
+  require_market_context: true
+
+defaults:
+  sheets:
+    GLOBAL:
+      <<: *activity_template
+    AXA CREDIT:
+      <<: *activity_template
+    ASSALAF AL AKHDAR:
+      <<: *activity_template
+    DAR SALAF:
+      <<: *activity_template
+    EQDOM:
+      <<: *activity_template
+    FNAC:
+      <<: *activity_template
+    RCI:
+      <<: *activity_template
+    SALAFIN:
+      <<: *activity_template
+    SOFAC:
+      <<: *activity_template
+    SOGEFINANCEMENT:
+      <<: *activity_template
+    SONAC:
+      <<: *activity_template
+    SOREC:
+      <<: *activity_template
+    VIVALIS:
+      <<: *activity_template
+    WAFASALAF:
+      <<: *activity_template
+    DIAC:
+      <<: *activity_template
+    FINACRED:
+      <<: *activity_template
+    SALAF AL MOUSTAQBAL:
+      <<: *activity_template
+
+    Syn prin concurents:
+      <<: *summary_common
+      limits:
+        first_row: 9
+        last_row: 117
+        first_column: 2
+        last_column: 23
+      title_area:
+        first_row: 1
+        last_row: 8
+        first_column: 1
+        last_column: 23
+      label_column: B
+      category_blocks:
+        VEHICULES: [E, F, G]
+        PRETS_PERSONNELS: [I, J, K]
+        EQUIPEMENT_DOMESTIQUE: [M, N, O]
+        REVOLVING: [Q, R, S]
+        GLOBAL: [U, V, W]
+      sections:
+        PRODUCTION_NETTE:
+          section_row: 9
+          category_row: 11
+          period_row: 13
+          data_start_row: 16
+          data_end_row: 30
+        ENCOURS_SAIN:
+          section_row: 33
+          category_row: 35
+          period_row: 37
+          data_start_row: 40
+          data_end_row: 54
+        CREANCES_EN_SOUFFRANCE:
+          section_row: 57
+          category_row: 59
+          period_row: 61
+          data_start_row: 64
+          data_end_row: 78
+        ENCOURS_BRUT:
+          section_row: 80
+          category_row: 82
+          period_row: 84
+          data_start_row: 87
+          data_end_row: 101
+        CES_SUR_ENCOURS_BRUT:
+          section_row: 103
+          category_row: 105
+          period_row: 107
+          data_start_row: 110
+          data_end_row: 117
+
+    Syn prin concurents par catégor:
+      <<: *summary_common
+      limits:
+        first_row: 9
+        last_row: 115
+        first_column: 1
+        last_column: 37
+      title_area:
+        first_row: 1
+        last_row: 8
+        first_column: 1
+        last_column: 37
+      label_column: A
+      category_blocks:
+        AUTO_CLASSIQUES: [C, D, E]
+        LOA: [G, H, I]
+        FONCTIONNAIRES: [K, L, M]
+        RETRAITES: [O, P, Q]
+        CONVENTIONS: [S, T, U]
+        BANCAIRES: [W, X, Y]
+        EQUIPEMENT_DOMESTIQUE: [AA, AB, AC]
+        REVOLVING: [AE, AF, AG]
+        GLOBAL: [AI, AJ, AK]
+      sections:
+        PRODUCTION_NETTE:
+          section_row: 9
+          category_row: 11
+          period_row: 13
+          data_start_row: 16
+          data_end_row: 30
+        ENCOURS_SAIN:
+          section_row: 32
+          category_row: 34
+          period_row: 36
+          data_start_row: 39
+          data_end_row: 53
+        CREANCES_EN_SOUFFRANCE:
+          section_row: 55
+          category_row: 57
+          period_row: 59
+          data_start_row: 62
+          data_end_row: 76
+        ENCOURS_BRUT:
+          section_row: 78
+          category_row: 80
+          period_row: 82
+          data_start_row: 85
+          data_end_row: 99
+        CES_SUR_ENCOURS_BRUT:
+          section_row: 101
+          category_row: 103
+          period_row: 105
+          data_start_row: 108
+          data_end_row: 115
+
+workbooks:
+  - file_name: SCC_Statistiques APSF Globales Mars 2026.xlsx
+    inherit_defaults: true

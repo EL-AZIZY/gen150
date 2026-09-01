@@ -1,0 +1,30 @@
+families:
+  apsf_activity:
+    parser: ApsfActivityParser
+    enabled: true
+    family_sheets:
+      - GLOBAL
+      - AXA CREDIT
+      - ASSALAF AL AKHDAR
+      - DAR SALAF
+      - EQDOM
+      - FNAC
+      - RCI
+      - SALAFIN
+      - SOFAC
+      - SOGEFINANCEMENT
+      - SONAC
+      - SOREC
+      - VIVALIS
+      - WAFASALAF
+      - DIAC
+      - FINACRED
+      - SALAF AL MOUSTAQBAL
+
+  apsf_competitor_summary:
+    parser: ApsfCompetitorSummaryParser
+    enabled: true
+    family_sheets:
+      - Syn prin concurents
+      - Syn prin concurents par catégor
+
