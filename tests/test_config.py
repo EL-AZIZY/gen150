@@ -28,6 +28,18 @@ class ConfigurationTests(unittest.TestCase):
         )
         self.assertIn("GLOBAL", selected["sheets"])
         self.assertIn("Syn prin concurents", selected["sheets"])
+        quarterly = selected["sheets"]["Syn prin concurents par trim"]
+        self.assertEqual(
+            set(quarterly["category_blocks"]),
+            {
+                "VEHICULES",
+                "PRETS_PERSONNELS",
+                "EQUIPEMENT_DOMESTIQUE",
+                "REVOLVING",
+                "GLOBAL",
+            },
+        )
+        self.assertEqual(quarterly["limits"]["last_column"], 28)
 
     def test_sheet_cannot_belong_to_two_families(self):
         configs = deepcopy(self.configs)

@@ -22,11 +22,26 @@ SUMMARY_HEADER = (
     "evolution_ratio_points", "marche_ratio_reference_pct",
     "marche_ratio_comparaison_pct", "evolution_marche_ratio_points",
 )
+QUARTERLY_HEADER = (
+    "date_reporting", "section", "organisme", "categorie", "annee",
+    "t1_mdh", "t2_mdh", "t3_mdh", "t4_mdh",
+    "marche_t1_mdh", "marche_t2_mdh", "marche_t3_mdh", "marche_t4_mdh",
+    "t1_pct", "t2_pct", "t3_pct", "t4_pct",
+    "marche_t1_pct", "marche_t2_pct", "marche_t3_pct", "marche_t4_pct",
+)
+
+FAMILY_HEADERS = {
+    "apsf_activity": ACTIVITY_HEADER,
+    "apsf_competitor_summary": SUMMARY_HEADER,
+    "apsf_competitor_quarterly": QUARTERLY_HEADER,
+}
 
 
 def validate_rows(family: str, header: Iterable[str], rows: list[dict[str, Any]]) -> list[str]:
     errors: list[str] = []
-    expected = ACTIVITY_HEADER if family == "apsf_activity" else SUMMARY_HEADER
+    expected = FAMILY_HEADERS.get(family)
+    if expected is None:
+        return [f"Unknown family validator: {family}"]
     header_tuple = tuple(header)
     if header_tuple != expected:
         errors.append(f"Header mismatch: expected {expected!r}, got {header_tuple!r}")
@@ -44,8 +59,8 @@ def validate_rows(family: str, header: Iterable[str], rows: list[dict[str, Any]]
         errors.extend(_validate_activity(rows))
     elif family == "apsf_competitor_summary":
         errors.extend(_validate_summary(rows))
-    else:
-        errors.append(f"Unknown family validator: {family}")
+    elif family == "apsf_competitor_quarterly":
+        errors.extend(_validate_quarterly(rows))
     return errors
 
 
@@ -109,6 +124,53 @@ def _validate_summary(rows: list[dict[str, Any]]) -> list[str]:
                 )
             )
         )
+        if row["section"] in monetary:
+            if any(row[field] not in (None, "") for field in ratio_fields):
+                errors.append(f"Row {index}: monetary section contains ratio values")
+        elif row["section"] == "CES_SUR_ENCOURS_BRUT":
+            if any(row[field] not in (None, "") for field in money_fields):
+                errors.append(f"Row {index}: ratio section contains monetary values")
+        else:
+            errors.append(f"Row {index}: unexpected section {row['section']!r}")
+    for group, contexts in market_contexts.items():
+        if len(contexts) > 1:
+            errors.append(f"Inconsistent market propagation for {group!r}")
+    return errors
+
+
+def _validate_quarterly(rows: list[dict[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    keys: set[tuple[Any, ...]] = set()
+    market_contexts: defaultdict[tuple[Any, ...], set[tuple[Any, ...]]] = defaultdict(set)
+    monetary = {
+        "PRODUCTION_NETTE", "ENCOURS_SAIN", "CREANCES_EN_SOUFFRANCE", "ENCOURS_BRUT"
+    }
+    money_fields = (
+        "t1_mdh", "t2_mdh", "t3_mdh", "t4_mdh",
+        "marche_t1_mdh", "marche_t2_mdh", "marche_t3_mdh", "marche_t4_mdh",
+    )
+    ratio_fields = (
+        "t1_pct", "t2_pct", "t3_pct", "t4_pct",
+        "marche_t1_pct", "marche_t2_pct", "marche_t3_pct", "marche_t4_pct",
+    )
+    market_fields = (
+        "marche_t1_mdh", "marche_t2_mdh", "marche_t3_mdh", "marche_t4_mdh",
+        "marche_t1_pct", "marche_t2_pct", "marche_t3_pct", "marche_t4_pct",
+    )
+    for index, row in enumerate(rows, start=1):
+        organism = canonical_text(row["organisme"])
+        if organism == "MARCHE" or "PART_DE_MARCHE" in organism:
+            errors.append(f"Row {index}: market technical line exported")
+        key = (
+            row["date_reporting"], row["section"], organism, row["categorie"], row["annee"]
+        )
+        if key in keys:
+            errors.append(f"Row {index}: duplicate business key")
+        keys.add(key)
+        group = (
+            row["date_reporting"], row["section"], row["categorie"], row["annee"]
+        )
+        market_contexts[group].add(tuple(row[field] for field in market_fields))
         if row["section"] in monetary:
             if any(row[field] not in (None, "") for field in ratio_fields):
                 errors.append(f"Row {index}: monetary section contains ratio values")

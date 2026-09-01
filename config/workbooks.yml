@@ -98,6 +98,12 @@ summary_common: &summary_common
   market_share_label: Part de marché
   require_market_context: true
 
+quarterly_common: &quarterly_common
+  family: apsf_competitor_quarterly
+  market_label: Marché
+  market_share_label: Part de marché
+  require_market_context: true
+
 defaults:
   sheets:
     GLOBAL:
@@ -240,6 +246,38 @@ defaults:
           period_row: 105
           data_start_row: 108
           data_end_row: 115
+
+    Syn prin concurents par trim:
+      <<: *quarterly_common
+      # T1/T2/T3 formulas reference the March/June/September 2024 APSF files;
+      # T4 is the residual full-year quarter in this historical view.
+      annee: 2024
+      date_reporting: 2024-12-31
+      source_note: External links 1, 6 and 7 confirm the 2024 quarterly series.
+      limits:
+        first_row: 9
+        last_row: 30
+        first_column: 2
+        last_column: 28
+      title_area:
+        first_row: 1
+        last_row: 3
+        first_column: 1
+        last_column: 28
+      label_column: B
+      category_blocks:
+        VEHICULES: [E, F, G, H]
+        PRETS_PERSONNELS: [J, K, L, M]
+        EQUIPEMENT_DOMESTIQUE: [O, P, Q, R]
+        REVOLVING: [T, U, V, W]
+        GLOBAL: [Y, Z, AA, AB]
+      sections:
+        PRODUCTION_NETTE:
+          section_row: 9
+          category_row: 11
+          period_row: 13
+          data_start_row: 16
+          data_end_row: 30
 
 workbooks:
   - file_name: SCC_Statistiques APSF Globales Mars 2026.xlsx

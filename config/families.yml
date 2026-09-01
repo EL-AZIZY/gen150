@@ -28,3 +28,8 @@ families:
       - Syn prin concurents
       - Syn prin concurents par catégor
 
+  apsf_competitor_quarterly:
+    parser: ApsfCompetitorQuarterlyParser
+    enabled: true
+    family_sheets:
+      - Syn prin concurents par trim

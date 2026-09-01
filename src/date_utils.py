@@ -57,6 +57,17 @@ def extract_reporting_date(values: list[object]) -> str:
     return date(year, month, calendar.monthrange(year, month)[1]).isoformat()
 
 
+def normalize_reporting_date(value: object) -> str:
+    if isinstance(value, datetime):
+        return value.date().isoformat()
+    if isinstance(value, date):
+        return value.isoformat()
+    try:
+        return date.fromisoformat(str(value).strip()).isoformat()
+    except ValueError as exc:
+        raise ValueError(f"Invalid reporting date: {value!r}; expected YYYY-MM-DD") from exc
+
+
 def parse_period(value: object) -> str:
     if value is None or value == "":
         return ""

@@ -36,6 +36,7 @@ GEN150/
 │   └── parsers/
 │       ├── base_parser.py
 │       ├── apsf_activity_parser.py
+│       ├── apsf_competitor_quarterly_parser.py
 │       └── apsf_competitor_summary_parser.py
 └── tests/
 ```
@@ -165,6 +166,24 @@ valeurs alimentent les champs `_mdh` et `_pct`. Pour `CES_SUR_ENCOURS_BRUT`, ell
 uniquement les champs de ratio `_pct` et `_points`. Un format Excel avec une virgule de
 mise à l’échelle, par exemple `#,##0,`, entraîne la conversion en MDH par division par
 1 000.
+
+## Famille `apsf_competitor_quarterly`
+
+Cette famille traite la feuille `Syn prin concurents par trim`. Le classeur APSF réel
+contient une seule section trimestrielle, `PRODUCTION_NETTE`, dans la zone `B9:AB30`.
+Les cinq blocs configurés sont Véhicules (`E:H`), Prêts personnels (`J:M`), Équipement
+domestique (`O:R`), Revolving (`T:W`) et Global (`Y:AB`). Les colonnes `O` et `T` sont
+masquées dans Excel mais contiennent bien les valeurs T1 des deux catégories concernées.
+
+Le parser exige exactement les en-têtes `T1`, `T2`, `T3`, `T4` sur chaque bloc. Il produit
+les champs `t1_mdh` à `t4_mdh` pour les sections monétaires et `t1_pct` à `t4_pct` pour
+`CES_SUR_ENCOURS_BRUT`, avec les huit champs Marché correspondants. `Marché` est propagé
+par section/catégorie et `Part de marché` n’est jamais exportée.
+
+Dans le classeur livré, les formules T1/T2/T3 pointent respectivement vers les arrêtés de
+mars, juin et septembre 2024, tandis que T4 est le trimestre résiduel annuel. La configuration
+porte donc explicitement `annee: 2024` et `date_reporting: 2024-12-31` ; aucune période n’est
+déduite du nom du fichier courant.
 
 ## Nombres et formules
 
