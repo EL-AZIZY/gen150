@@ -9,6 +9,14 @@ from .numeric_utils import format_decimal
 from .sheet_router import slugify_name
 
 
+def decimal_places_for_field(field: str) -> int | None:
+    if field.endswith(("_pct", "_points")):
+        return 1
+    if field.startswith("dossiers_") or field.endswith(("_mad", "_mdh", "_unites")):
+        return 0
+    return None
+
+
 class Exporter:
     def __init__(self, output_directory: Path, separator: str, encoding: str) -> None:
         self.output_directory = output_directory
@@ -43,7 +51,14 @@ class Exporter:
             )
             writer.writeheader()
             for row in rows:
-                writer.writerow({field: format_decimal(row.get(field)) for field in header_tuple})
+                writer.writerow(
+                    {
+                        field: format_decimal(
+                            row.get(field), decimal_places_for_field(field)
+                        )
+                        for field in header_tuple
+                    }
+                )
         return path
 
     def write_rejection(self, workbook_name: str, sheet_name: str, reasons: list[str]) -> Path:

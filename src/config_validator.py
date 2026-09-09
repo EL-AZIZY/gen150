@@ -49,6 +49,13 @@ def validate_configuration(configs: dict[str, dict[str, Any]], registry: dict[st
     for workbook in configs["workbooks"].get("workbooks", []):
         if not workbook.get("file_name"):
             raise ConfigError("Every workbooks entry must have file_name")
+        enabled_families = workbook.get("enabled_families")
+        if enabled_families is not None:
+            if not isinstance(enabled_families, list) or not enabled_families:
+                raise ConfigError("enabled_families must be a non-empty list")
+            unknown = set(enabled_families) - set(families)
+            if unknown:
+                raise ConfigError(f"Unknown enabled_families: {sorted(unknown)!r}")
         _validate_sheet_structures(workbook.get("sheets", {}), families, partial=True)
 
 
@@ -80,4 +87,20 @@ def _validate_sheet_structures(
         label_column = structure.get("label_column")
         if label_column:
             column_index_from_string(str(label_column))
-
+        if declared_family == "production_marque_variation_tpr":
+            tables = structure.get("tables")
+            if not isinstance(tables, list) or not tables:
+                raise ConfigError(f"Sheet {sheet_name!r} requires Variation TPR tables")
+            for table in tables:
+                for key in ("header_row", "data_start_row", "data_end_row"):
+                    if key not in table:
+                        raise ConfigError(f"Sheet {sheet_name!r} table requires {key}")
+                if int(table["data_start_row"]) > int(table["data_end_row"]):
+                    raise ConfigError(f"Sheet {sheet_name!r} has invalid table rows")
+                for key in ("ville_column", "variation_column"):
+                    column_index_from_string(str(table[key]))
+                value_columns = table.get("value_columns", [])
+                if len(value_columns) != 2:
+                    raise ConfigError(f"Sheet {sheet_name!r} requires two period columns")
+                for column in value_columns:
+                    column_index_from_string(str(column))

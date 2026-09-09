@@ -59,13 +59,14 @@ class SheetRouter:
     def route(self) -> Iterator[RoutedSheet]:
         processed: set[str] = set()
         configured: set[str] = set()
+        enabled_families = set(self.workbook_config.get("enabled_families", self.families))
         structures = {
             normalize_sheet_name(name): value
             for name, value in self.workbook_config.get("sheets", {}).items()
         }
 
         for family_name, family_config in self.families.items():
-            if not family_config.get("enabled", True):
+            if not family_config.get("enabled", True) or family_name not in enabled_families:
                 continue
             family_sheets = family_config["family_sheets"]
             self.logger.info(
@@ -105,4 +106,3 @@ class SheetRouter:
             normalized = normalize_sheet_name(real_name)
             if normalized not in configured:
                 self.logger.info("Sheet skipped: not configured in any family: %s", real_name)
-

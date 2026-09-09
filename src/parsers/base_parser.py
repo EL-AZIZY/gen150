@@ -29,6 +29,9 @@ class ParserContext:
     error_policy: str
     missing_formula_cache_policy: str
     logger: Any
+    pivot_filter_selections: dict[tuple[str, int, str], tuple[Any, ...]] = field(
+        default_factory=dict
+    )
 
 
 class BaseParser:
@@ -92,4 +95,3 @@ class BaseParser:
     def first_year(value: object) -> int | None:
         match = re.search(r"\b(20\d{2})\b", str(value or ""))
         return int(match.group(1)) if match else None
-

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from typing import Any
 
 
@@ -34,12 +34,18 @@ def to_decimal(value: Any) -> Decimal | str | None:
     return str(value)
 
 
-def format_decimal(value: Any) -> str:
+def format_decimal(value: Any, decimal_places: int | None = None) -> str:
     converted = to_decimal(value)
     if converted is None:
         return ""
     if isinstance(converted, str):
         return converted
+    if decimal_places is not None and converted.is_finite():
+        quantum = Decimal(1).scaleb(-decimal_places)
+        converted = converted.quantize(quantum, rounding=ROUND_HALF_UP)
+        if converted == 0:
+            converted = abs(converted)
+        return format(converted, f".{decimal_places}f")
     if converted == 0:
         return "0"
     rendered = format(converted, "f")
@@ -77,4 +83,3 @@ def has_thousands_scaling(number_format: str | None) -> bool:
 
 def is_scientific_notation(value: object) -> bool:
     return bool(_SCIENTIFIC.fullmatch(str(value).strip()))
-

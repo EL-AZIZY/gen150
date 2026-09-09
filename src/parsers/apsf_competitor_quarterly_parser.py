@@ -108,7 +108,13 @@ class ApsfCompetitorQuarterlyParser(BaseParser):
             "title_area",
             {"first_row": 1, "last_row": 8, "first_column": 1, "last_column": 12},
         )
-        return extract_reporting_date(self.values_in_area(title_area))
+        try:
+            return extract_reporting_date(self.values_in_area(title_area))
+        except ValueError:
+            # B2 in the supplied quarterly sheet is a caption without a date.
+            # The explicit reporting year uses December 31 as a convention;
+            # other families keep their existing date extraction behavior.
+            return f"{self._configured_year():04d}-12-31"
 
     def _configured_year(self) -> int:
         value = self.config.get("annee")
@@ -190,4 +196,3 @@ class ApsfCompetitorQuarterlyParser(BaseParser):
             for index, value in enumerate(market_values, start=1):
                 row[f"marche_t{index}_mdh"] = value
         return row
-

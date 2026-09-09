@@ -1,3 +1,5 @@
+# Seules les feuilles visibles prises en charge du classeur APSF sont declarees.
+# Les feuilles hidden et veryHidden sont toujours ignorees par le routeur.
 families:
   apsf_activity:
     parser: ApsfActivityParser
@@ -33,3 +35,82 @@ families:
     enabled: true
     family_sheets:
       - Syn prin concurents par trim
+
+  production_marque_details:
+    parser: FlatTableParser
+    enabled: true
+    family_sheets:
+      - Détails
+      - Feuil2
+      - Feuil4
+
+  production_marque_penetration:
+    parser: ProductionMarquePenetrationParser
+    enabled: true
+    family_sheets:
+      - ville
+      - marq Men
+      - marq An
+      - marq Men salé
+      - marq An salé
+      - marq Men Casa
+      - marq An Casa
+      - marq Men rabat
+      - marq An rabat
+      - marq Men marrakech
+      - marq An marrakech
+      - marq Men fes
+      - marq An fes
+      - marq Men Agadir
+      - marq An Agadir
+      - marq Men SAFI
+      - marq An SAFI
+      - marq Men Tanger
+      - marq An Tanger
+      - marq Men Meknes
+      - marq An Meknes
+      - marq Men Kenitra
+      - marq An Kenitra
+      - marq Men El Jadida
+      - marq An EL Jadida
+      - marq Men Tetouan
+      - marq An Tetouan
+      - marq Men Oujda
+      - marq An Oujda
+      - marq Men Mohammedia
+      - marq An Mohammedia
+
+  production_marque_concession:
+    parser: ProductionMarqueConcessionParser
+    enabled: true
+    family_sheets:
+      - Concession
+
+  production_marque_pivot_staging:
+    parser: ProductionMarquePivotStagingParser
+    enabled: true
+    family_sheets:
+      - synthése Par marque
+      - synthése Par marque rabat
+      - synthése Par marque Kenitra
+      - synthése Par marque fes
+      - synthése Par marque Casa
+      - synthése Par marque salé
+      - synthése Par marque marrakech
+      - synthése Par marque Agadir
+      - synthése Par marque Tanger
+      - synthése Par marque Meknes
+      - synthése Par marque Eljadida
+      - synthése Par marque Tetouan
+      - synthése Par marque Oujda
+      - synthése Par marque SAFI
+      - synthése Par marque Mohammedia
+      - Synthése par ville
+
+  production_marque_variation_tpr:
+    parser: ProductionMarqueVariationTprParser
+    enabled: true
+    family_sheets:
+      - Table
+
+# Les feuilles hidden/veryHidden restent ignorées automatiquement par le routeur.

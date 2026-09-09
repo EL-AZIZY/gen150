@@ -12,6 +12,7 @@ from .config_validator import validate_configuration
 from .exporter import Exporter
 from .parsers import FAMILY_REGISTRY
 from .parsers.base_parser import ParserContext, SheetRejected
+from .pivot_filter_reader import read_pivot_filter_selections
 from .settings import Settings
 from .sheet_router import SheetRouter
 from .validators import validate_rows
@@ -67,6 +68,7 @@ def process_workbook(
         "sheets": [],
     }
     try:
+        pivot_filter_selections = read_pivot_filter_selections(path)
         router = SheetRouter(pair.values, families, workbook_config, LOGGER)
         for routed in router.route():
             parser_class = FAMILY_REGISTRY[routed.family_name]
@@ -88,11 +90,13 @@ def process_workbook(
                         error_policy=settings.excel_error_policy,
                         missing_formula_cache_policy=settings.missing_formula_cache_policy,
                         logger=LOGGER,
+                        pivot_filter_selections=pivot_filter_selections,
                     )
                 )
                 result = parser.process()
                 validation_errors = validate_rows(
-                    routed.family_name, result.header, result.rows
+                    routed.family_name, result.header, result.rows,
+                    layout=routed.sheet_config.get("layout", "summary"),
                 )
                 if validation_errors:
                     rejected_path = exporter.write_csv(
